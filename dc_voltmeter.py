@@ -14,7 +14,7 @@ class DC_V:
 
     def __init__(self):
         if not DC_V.ser:
-            DC_V.ser = serial.Serial(port='/dev/dkst1101/COM11',
+            DC_V.ser = serial.Serial(port='/dev/dkst1101/COM17',
                                     baudrate=9600,
                                     parity=serial.PARITY_NONE,
                                     stopbits=serial.STOPBITS_ONE,
@@ -36,14 +36,15 @@ class DC_V:
 
             answer = DC_V.ser.readline()
             answer = answer.decode('ascii')
-
-            values = [ answer[x:x + 4] for x in range (0, len(s), 4) ]
-
-            index = int(channel.upper()[3:])
-
+            
+            values = [ answer[x:x + 4] for x in range (1, len(answer), 4) ]
+            
+            index = int(channel.upper()[4:])
+            
             b = bytes(values[index], 'utf-8')
             ba = binascii.a2b_hex(b)
-            num = print(int.from_bytes(ba, byteorder='big', signed=True))
+            num = int.from_bytes(ba, byteorder='big', signed=True)
+            
 
             #If hex_data >= 0 then
             #real_data = hex_data * 10 / 32767
